@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Quotes by Anime Name</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Open+Sans:ital,wght@0,500;0,600;1,400&family=Poppins:wght@400;500;600&family=Roboto+Condensed:ital,wght@0,400;1,300;1,400&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+    }
+    body {
+      width: 100%;
+      font-family: "Roboto Condensed", sans-serif;
+      min-height: 100vh;
+      line-height: 1.5;
+      width: 100%;
+      color: #fff;
+      font-weight: 400;
+    }
+    .hero {
+      width: 100%;
+      min-height: 100vh;
+      background-image: url('bg-anime.jpg');
+      background-size: cover;
+    }
+    input {
+      outline: none;
+    }
+    button {
+      border: none;
+    }
+    .container {
+      max-width: 1060px;
+      margin-inline: auto;
+      padding: 0 1rem;
+    }
+    .wrapper {
+      padding-top: 5rem;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .search-box {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 4rem;
+    }
+    .search-btn {
+      cursor: pointer;
+      padding: 7px 12px;
+      font: inherit;
+    }
+    .input-field {
+      padding: 8px 8px;
+      font: inherit;
+      width: 200px;
+    }
+    .input-field::placeholder {
+      opacity: 0.5;
+    }
+    .show {
+      animation: fadeIn 0.3s ;
+    }
+    .character {
+      text-transform: capitalize;
+      letter-spacing: 1px;
+    }
+    .quote {
+      font-size: 1.25rem;
+      font-style: italic;
+      margin-top: 0.5rem;
+    }
+    .show {
+      margin-bottom: 2rem;
+    }
+    .quotes-wrapper {
+      width: 100%;
+    }
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+    @media screen and (max-width: 450px) {
+      .quote {
+        font-size: 1rem;
+        /* font-weight: 300; */
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <div class="container">
+      <div class="wrapper">
+        <div class="search-box">
+          <input type="text" id="input" class="input-field" placeholder="Anime name">
+          <button class="search-btn">Get quote</button>
+        </div>
+        <div class="quotes-wrapper">
+          <!-- <div class="show">
+            <p class="character">Character - Zoro</p>
+            <p class="quote">
+              &#34;Youth is a hoax. It's evil. People who make a big deal of their "youth", are just inviting trouble. They try to keep everything going on around them. For them, if there's something that&#34;
+            </p>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const input = document.querySelector('#input');
+    const searchBtn = document.querySelector('.search-btn');
+    const quotesWrapper = document.querySelector('.quotes-wrapper');
+
+    searchBtn.addEventListener('click', loadQuotes);
+
+    function loadQuotes() {
+      quotesWrapper.innerHTML = "";
+      const value = input.value.toLowerCase().split(' ').join('&');
+      console.log(value);
+      const url = `https://animechan.vercel.app/api/quotes/anime?title=${value}`;
+
+
+      const httpRequest = new XMLHttpRequest();
+      httpRequest.open('GET', url, true);
+      httpRequest.send();
+
+      httpRequest.onload = function() {
+        if (httpRequest.status == 200) {
+          // console.log(this.responseText);
+          const quoteData = JSON.parse(this.responseText);
+          console.log(quoteData);
+          quoteData.forEach(element => {
+            const html = 
+            `<div class="show">
+            <p class="character">Character - ${element.character}</p>
+            <p class="quote">&#34;${element.quote}&#34;</p>
+            </div>`;
+            quotesWrapper.innerHTML += html;
+          });
+        }
+      }
+      input.value = "";
+    }
+    
+  </script>
+</body>
+</html>
